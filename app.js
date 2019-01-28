@@ -4,9 +4,11 @@ window.addEventListener("load", () => {
     let long;
     let lat;
     // document.querySelector refers to an id on the html file
-    let temperatureDescription = document.querySelector('.temprature-description');
-    let temperatureDegree = document.querySelector('.temprature-degree');
+    let temperatureDescription = document.querySelector('.temperature-description');
+    let temperatureDegree = document.querySelector('.temperature-degree');
     let locationTimezone = document.querySelector('.location-timezone');
+    let temperatureSection = document.querySelector('.temperature');
+    const temperatureSpan = document.querySelector('.temperature span');
     
     // uses built in navigator.geolocation method to get users current longtitude and latitude
     if (navigator.geolocation) {
@@ -28,11 +30,39 @@ window.addEventListener("load", () => {
                 return response.json();
             })
             .then(data => {
+                console.log(data);
+                const { temperature, summary, icon } = data.currently;
                 // set DOM elements from the API, get the necessay object data from dev console on app
-                temperatureDegree.textContent = data.currently.temperature;
-                temperatureDescription.textContent = data.currently.summary;
+                
+                temperatureDegree.textContent = temperature;
+                temperatureDescription.textContent = summary;
                 locationTimezone.textContent = data.timezone; 
+                
+                // Formula for celsius
+                let celsius = (temperature -32) * (5 / 9);
+                
+                // trigger Set Icons function
+                setIcons(icon, document.querySelector('.icon'));
+                
+                // Toggle temprature between celsius/farenheight
+                temperatureSection.addEventListener('click', () =>{
+                   if(temperatureSpan.textContent === "F"){
+                       temperatureSpan.textContent = "C";
+                   }else{
+                       temperatureSpan.textContent = "F";
+                   } 
+                });
             });
         });
+    }
+    
+    function setIcons(icon, iconID){
+        // set skycon color
+        const skycons = new Skycons({color: "white"});
+        // replace the " - " character in the icon data received to a " _ " all (g for all occurunces)
+        const currentIcon = icon.replace(/-/g, "_").toUpperCase();
+        // intiate animation
+        skycons.play();
+        return skycons.set(iconID, Skycons[currentIcon]);
     }
 });
