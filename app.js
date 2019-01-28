@@ -4,6 +4,7 @@ window.addEventListener("load", () => {
     let long;
     let lat;
     // document.querySelector refers to an id on the html file
+    let windSpeedSection = document.querySelector('.windspeed');
     let temperatureDescription = document.querySelector('.temperature-description');
     let temperatureDegree = document.querySelector('.temperature-degree');
     let locationTimezone = document.querySelector('.location-timezone');
@@ -31,12 +32,13 @@ window.addEventListener("load", () => {
             })
             .then(data => {
                 console.log(data);
-                const { temperature, summary, icon } = data.currently;
-                // set DOM elements from the API, get the necessay object data from dev console on app
+                const { windSpeed, temperature, summary, icon } = data.currently;
                 
+                // set DOM elements from the API, get the necessay object data from dev console on app
                 temperatureDegree.textContent = temperature;
                 temperatureDescription.textContent = summary;
-                locationTimezone.textContent = data.timezone; 
+                locationTimezone.textContent = data.timezone.replace(/_/g, " ");
+                windSpeedSection.textContent = "Wind Speed: " + (windSpeed * 0.62137).toFixed(2) + " MPH";
                 
                 // Formula for celsius
                 let celsius = (temperature -32) * (5 / 9);
@@ -48,7 +50,7 @@ window.addEventListener("load", () => {
                 temperatureSection.addEventListener('click', () =>{
                    if(temperatureSpan.textContent === "F"){
                        temperatureSpan.textContent = "C";
-                       temperatureDegree.textContent = Math.floor(celsius);
+                       temperatureDegree.textContent = celsius.toFixed(2);
                    }else{
                        temperatureSpan.textContent = "F";
                        temperatureDegree.textContent = temperature;
