@@ -1,7 +1,12 @@
 // as soon as page loads this eventlistener fires
 window.addEventListener("load", () => {
+    // declare necessary global variables
     let long;
     let lat;
+    // document.querySelector refers to an id on the html file
+    let temperatureDescription = document.querySelector('.temprature-description');
+    let temperatureDegree = document.querySelector('.temprature-degree');
+    let locationTimezone = document.querySelector('.location-timezone');
     
     // uses built in navigator.geolocation method to get users current longtitude and latitude
     if (navigator.geolocation) {
@@ -23,9 +28,10 @@ window.addEventListener("load", () => {
                 return response.json();
             })
             .then(data => {
-                // log the data to the console behind the scenes
-                console.log(data);
-                const {temprature, summary} = data.currently;giut 
+                // set DOM elements from the API, get the necessay object data from dev console on app
+                temperatureDegree.textContent = data.currently.temperature;
+                temperatureDescription.textContent = data.currently.summary;
+                locationTimezone.textContent = data.timezone; 
             });
         });
     }
